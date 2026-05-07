@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import premeees.aquarium.dto.TaskCreateRequest;
 import premeees.aquarium.dto.TaskResponse;
+import premeees.aquarium.dto.TaskCompleteRequest;
+import premeees.aquarium.dto.TaskCompleteResponse;
 import premeees.aquarium.Service.TaskService;
 
 @RestController
@@ -23,4 +25,15 @@ public class TaskController {
         TaskResponse response = taskService.createTask(username, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PutMapping("/{taskId}/complete")
+    public ResponseEntity<TaskCompleteResponse> completeTask(
+            @PathVariable Long taskId,
+            @RequestBody TaskCompleteRequest request,
+            Authentication authentication) {
+        String username = authentication.getName();
+        TaskCompleteResponse response = taskService.completeTask(username, taskId, request);
+        return ResponseEntity.ok(response);
+    }
 }
+

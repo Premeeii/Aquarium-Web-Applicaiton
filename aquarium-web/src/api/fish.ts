@@ -13,4 +13,5 @@ export interface FishSpecies {
 
 export const fishApi = {
   getAllFishes: () => api.get<FishSpecies[]>('/fishes'),
+  addFish: (fish: Omit<FishSpecies, 'id'>) => api.post<FishSpecies>('/fishes/addfish', fish),
 };
