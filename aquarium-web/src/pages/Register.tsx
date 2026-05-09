@@ -23,8 +23,9 @@ export default function Register() {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('username', res.data.username);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed.');
+    } catch (err) {
+      const error = err as any;
+      setError(error.response?.data?.message || 'Registration failed.');
     } finally { setLoading(false); }
   };
 

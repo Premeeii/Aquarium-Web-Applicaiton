@@ -22,8 +22,9 @@ export default function Login() {
       const res = await authApi.login(form);
       setToken(res.data.token, res.data.username);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    } catch (err) {
+      const error = err as any;
+      setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }

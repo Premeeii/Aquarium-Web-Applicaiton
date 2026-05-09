@@ -80,7 +80,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set({ isTaskModalOpen: false, taskTitle: '' });
       get().fetchTasks();
       return true;
-    } catch (err) {
+    } catch {
       alert('Failed to create task');
       return false;
     }
@@ -97,7 +97,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set({ isCompleteModalOpen: false, selectedTask: null });
       get().fetchTasks();
       return true;
-    } catch (err) {
+    } catch {
       alert('Failed to complete task');
       return false;
     }

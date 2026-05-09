@@ -4,9 +4,14 @@ import { useAuthStore } from '../stores/useAuthStore';
 import { useFishStore } from '../stores/useFishStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useTaskStore } from '../stores/useTaskStore';
+import { useTimerStore } from '../stores/useTimerStore';
+import { TimerBanner } from '../components/TimerBanner';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
+  // Timer store
+  const { startTimer, activeTask, syncFromStorage } = useTimerStore();
 
   // Auth store
   const { profile, loading, fetchProfile, refreshProfile, logout } = useAuthStore();
@@ -23,7 +28,7 @@ export default function Dashboard() {
     taskTitle, taskTag, taskDuration, selectedFishId,
     actualDuration, completedEarly,
     fetchTasks, createTask, completeTask,
-    openTaskModal, closeTaskModal, openCompleteModal, closeCompleteModal,
+    openTaskModal, closeTaskModal, closeCompleteModal,
     setTaskTitle, setTaskTag, setTaskDuration, setSelectedFishId,
     setActualDuration, setCompletedEarly,
   } = useTaskStore();
@@ -32,11 +37,12 @@ export default function Dashboard() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
+    syncFromStorage();
     fetchProfile().then(authenticated => {
       if (!authenticated) navigate('/login');
     });
     fetchTasks();
-  }, [navigate]);
+  }, [navigate, syncFromStorage, fetchProfile, fetchTasks]);
 
   const handleLogout = () => {
     logout();
@@ -180,13 +186,18 @@ export default function Dashboard() {
                       {task.expectedDuration} mins
                     </div>
                   </div>
-                  <button 
-                    onClick={() => openCompleteModal(task)}
-                    className="btn-primary-solid" 
-                    style={{ width: 'auto', padding: '8px 20px', marginTop: 0, fontSize: '0.8125rem' }}
-                  >
-                    Complete
-                  </button>
+                  {activeTask?.id === task.id ? (
+                    <span style={{ fontSize: '0.875rem', color: 'var(--primary-color)', fontWeight: 'bold' }}>Active</span>
+                  ) : (
+                    <button 
+                      onClick={() => startTimer(task)}
+                      className="btn-primary-solid" 
+                      style={{ width: 'auto', padding: '8px 20px', marginTop: 0, fontSize: '0.8125rem' }}
+                      disabled={!!activeTask}
+                    >
+                      Start
+                    </button>
+                  )}
                 </div>
               ))
             )}
@@ -536,6 +547,9 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* Timer Banner */}
+      <TimerBanner />
     </div>
   );
 }
