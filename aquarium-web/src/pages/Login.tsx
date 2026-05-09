@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth';
+import { useAuthStore } from '../stores/useAuthStore';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setToken } = useAuthStore();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,8 +20,7 @@ export default function Login() {
     setLoading(true);
     try {
       const res = await authApi.login(form);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('username', res.data.username);
+      setToken(res.data.token, res.data.username);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');

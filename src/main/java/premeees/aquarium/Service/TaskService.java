@@ -18,6 +18,8 @@ import premeees.aquarium.Repository.TaskRepository;
 import premeees.aquarium.Repository.UserInventoryRepository;
 import premeees.aquarium.Repository.UserRepository;
 import premeees.aquarium.Repository.UserFishInstanceRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,23 @@ public class TaskService {
     private final UserRepository userRepository;
     private final UserInventoryRepository userInventoryRepository;
     private final UserFishInstanceRepository userFishInstanceRepository;
+
+    public List<TaskResponse> getTasks(String username) {
+        return taskRepository.findByUserUsernameOrderByCreatedAtDesc(username).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private TaskResponse mapToResponse(Task task) {
+        return TaskResponse.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .tag(task.getTag())
+                .expectedDuration(task.getExpectedDuration())
+                .status(task.getStatus())
+                .createdAt(task.getCreatedAt())
+                .build();
+    }
 
     @Transactional
     public TaskResponse createTask(String username, TaskCreateRequest request) {
@@ -57,15 +76,7 @@ public class TaskService {
                 .build();
 
         Task savedTask = taskRepository.save(task);
-
-        return TaskResponse.builder()
-                .id(savedTask.getId())
-                .title(savedTask.getTitle())
-                .tag(savedTask.getTag())
-                .expectedDuration(savedTask.getExpectedDuration())
-                .status(savedTask.getStatus())
-                .createdAt(savedTask.getCreatedAt())
-                .build();
+        return mapToResponse(savedTask);
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import premeees.aquarium.dto.TaskResponse;
 import premeees.aquarium.dto.TaskCompleteRequest;
 import premeees.aquarium.dto.TaskCompleteResponse;
 import premeees.aquarium.Service.TaskService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
@@ -17,6 +18,12 @@ import premeees.aquarium.Service.TaskService;
 public class TaskController {
 
     private final TaskService taskService;
+
+    @GetMapping("/me")
+    public ResponseEntity<List<TaskResponse>> getMyTasks(Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(taskService.getTasks(username));
+    }
 
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@RequestBody TaskCreateRequest request,

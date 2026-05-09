@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import premeees.aquarium.Entity.UserInventory;
 import premeees.aquarium.Repository.UserInventoryRepository;
+import premeees.aquarium.Entity.enums.ItemType;
+import premeees.aquarium.dto.FishResponse;
 import premeees.aquarium.dto.UserInventoryResponse;
 
 import java.util.List;
@@ -23,11 +25,27 @@ public class UserInventoryService {
     }
 
     private UserInventoryResponse mapToResponse(UserInventory inventory) {
-        return UserInventoryResponse.builder()
+        UserInventoryResponse response = UserInventoryResponse.builder()
                 .id(inventory.getId())
                 .itemType(inventory.getItemType())
                 .itemId(inventory.getItemId())
                 .acquiredAt(inventory.getAcquiredAt())
                 .build();
+
+        if (inventory.getItemType() == ItemType.FISH && inventory.getFish() != null) {
+            var fish = inventory.getFish();
+            response.setFishDetails(FishResponse.builder()
+                    .id(fish.getId())
+                    .speciesName(fish.getSpeciesName())
+                    .description(fish.getDescription())
+                    .basePrice(fish.getBasePrice())
+                    .rarity(fish.getRarity())
+                    .imageUrlEgg(fish.getImageUrlEgg())
+                    .imageUrlBaby(fish.getImageUrlBaby())
+                    .imageUrlAdult(fish.getImageUrlAdult())
+                    .build());
+        }
+
+        return response;
     }
 }

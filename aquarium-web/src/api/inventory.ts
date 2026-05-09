@@ -1,9 +1,11 @@
 import api from './auth';
+import type { FishSpecies } from './fish';
 
 export interface UserInventoryItem {
   id: number;
   itemType: 'FISH' | 'DECORATION';
   itemId: number;
+  fishDetails?: FishSpecies;
   acquiredAt: string;
 }
 
