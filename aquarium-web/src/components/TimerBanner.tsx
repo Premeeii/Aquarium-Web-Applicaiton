@@ -69,7 +69,7 @@ export const TimerBanner: React.FC = () => {
   return (
     <>
       <div className="timer-banner animate-fade-in" style={{
-        position: 'fixed',
+        position: 'absolute',
         bottom: '24px',
         left: '50%',
         transform: 'translateX(-50%)',
@@ -82,7 +82,8 @@ export const TimerBanner: React.FC = () => {
         alignItems: 'center',
         gap: '24px',
         zIndex: 50,
-        border: '1px solid rgba(255,255,255,0.1)'
+        border: '1px solid rgba(255,255,255,0.1)',
+        maxWidth: 'calc(100% - 48px)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{

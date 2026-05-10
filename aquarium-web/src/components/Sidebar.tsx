@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useFishStore } from "../stores/useFishStore";
 import { useInventoryStore } from "../stores/useInventoryStore";
 import { useTaskStore } from "../stores/useTaskStore";
 
-export default function Navbar() {
+export default function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Auth store
   const { profile, logout } = useAuthStore();
@@ -65,128 +66,139 @@ export default function Navbar() {
     });
   };
 
+  const initial = profile?.username?.charAt(0)?.toUpperCase() || "?";
+
   return (
     <>
-      {/* Top Navbar */}
-      <nav className="top-navbar">
-        <div className="nav-container">
-          <div className="nav-left">
-            <div
-              className="dashboard-brand"
-              onClick={() => navigate("/dashboard")}
-            >
-              <div className="dashboard-brand-icon">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
-                  <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
-                  <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
-                </svg>
-              </div>
-              <span>Aquarium</span>
+      <aside className="sidebar">
+        {/* Profile Section */}
+        <div className="sidebar-profile">
+          <div className="sidebar-avatar">{initial}</div>
+          <h3 className="sidebar-username">{profile?.username || "User"}</h3>
+          <span className="sidebar-role">Aquarium</span>
+          <div className="sidebar-stats">
+            <div className="sidebar-stat">
+              <span className="sidebar-stat-icon">🪙</span>
+              <span className="sidebar-stat-value">{profile?.coins ?? 0}</span>
             </div>
-
-            <div className="nav-links">
-              <button
-                onClick={fetchFishes}
-                className={`nav-item ${isModalOpen ? "active" : ""}`}
-                disabled={loadingFishes}
-              >
-                {loadingFishes ? (
-                  <svg className="spinner" viewBox="0 0 24 24" fill="none">
-                    <circle
-                      opacity="0.25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      opacity="0.75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
-                    />
-                  </svg>
-                ) : (
-                  "Shop"
-                )}
-              </button>
-              <button
-                onClick={fetchInventory}
-                className={`nav-item ${isInventoryOpen ? "active" : ""}`}
-                disabled={loadingInventory}
-              >
-                {loadingInventory ? (
-                  <svg className="spinner" viewBox="0 0 24 24" fill="none">
-                    <circle
-                      opacity="0.25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      opacity="0.75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4 0 12h4z"
-                    />
-                  </svg>
-                ) : (
-                  "Inventory"
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  ensureLoaded();
-                  openTaskModal();
-                }}
-                className="nav-item"
-              >
-                Add Task
-              </button>
-              <button onClick={() => navigate("/profile")} className="nav-item">
-                Profile
-              </button>
+            <div className="sidebar-stat">
+              <span className="sidebar-stat-icon">🔥</span>
+              <span className="sidebar-stat-value">
+                {profile?.streakCount ?? 0}
+              </span>
             </div>
-          </div>
-
-          <div className="nav-right">
-            <div className="nav-stats">
-              <div className="nav-stat">
-                <span>🪙</span>
-                <span>{profile?.coins ?? 0}</span>
-              </div>
-              <div className="nav-stat">
-                <span>🔥</span>
-                <span>{profile?.streakCount ?? 0}</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsLogoutModalOpen(true)}
-              className="btn-sign-out"
-              title="Sign Out"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                style={{ width: "16px" }}
-              >
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
-              </svg>
-            </button>
           </div>
         </div>
-      </nav>
 
-      {/* Modals Section */}
+        {/* Navigation */}
+        <nav className="sidebar-nav">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className={`sidebar-nav-item ${location.pathname === "/dashboard" ? "active" : ""}`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span>Home</span>
+          </button>
+
+          <button
+            onClick={fetchFishes}
+            className={`sidebar-nav-item ${isModalOpen ? "active" : ""}`}
+            disabled={loadingFishes}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+            </svg>
+            <span>{loadingFishes ? "..." : "Shop"}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              ensureLoaded();
+              openTaskModal();
+            }}
+            className="sidebar-nav-item"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+            <span>Add Task</span>
+          </button>
+
+          <button
+            onClick={fetchInventory}
+            className={`sidebar-nav-item ${isInventoryOpen ? "active" : ""}`}
+            disabled={loadingInventory}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <span>{loadingInventory ? "..." : "Inventory"}</span>
+          </button>
+
+          <button
+            onClick={() => navigate("/profile")}
+            className={`sidebar-nav-item ${location.pathname === "/profile" ? "active" : ""}`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>Profile</span>
+          </button>
+        </nav>
+
+        {/* Logout */}
+        <div className="sidebar-footer">
+          <button
+            onClick={() => setIsLogoutModalOpen(true)}
+            className="sidebar-nav-item sidebar-logout"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ============ Modals ============ */}
 
       {/* Shop Modal */}
       {isModalOpen && (

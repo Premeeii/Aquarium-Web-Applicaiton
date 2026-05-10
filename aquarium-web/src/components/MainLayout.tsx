@@ -1,16 +1,18 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import TaskPanel from "./TaskPanel";
 import { TimerBanner } from "./TimerBanner";
 import CompleteTaskModal from "./CompleteTaskModal";
 
 export default function MainLayout() {
   return (
-    <div className="main-layout" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
-      <div className="layout-content" style={{ flex: 1, position: "relative" }}>
+    <div className="app-layout">
+      <Sidebar />
+      <main className="center-content">
         <Outlet />
-      </div>
-      <TimerBanner />
+        <TimerBanner />
+      </main>
+      <TaskPanel />
       <CompleteTaskModal />
     </div>
   );
