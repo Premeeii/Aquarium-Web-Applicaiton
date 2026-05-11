@@ -37,7 +37,7 @@ public class TaskService {
     }
 
     private TaskResponse mapToResponse(Task task) {
-        return TaskResponse.builder()
+        TaskResponse response = TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .tag(task.getTag())
@@ -45,6 +45,25 @@ public class TaskService {
                 .status(task.getStatus())
                 .createdAt(task.getCreatedAt())
                 .build();
+                
+        if (task.getInventoryFish() != null) {
+            response.setInventoryFishId(task.getInventoryFish().getId());
+            if (task.getInventoryFish().getFish() != null) {
+                var fish = task.getInventoryFish().getFish();
+                response.setFishDetails(premeees.aquarium.dto.FishResponse.builder()
+                        .id(fish.getId())
+                        .speciesName(fish.getSpeciesName())
+                        .description(fish.getDescription())
+                        .basePrice(fish.getBasePrice())
+                        .rarity(fish.getRarity())
+                        .imageUrlEgg(fish.getImageUrlEgg())
+                        .imageUrlBaby(fish.getImageUrlBaby())
+                        .imageUrlAdult(fish.getImageUrlAdult())
+                        .build());
+            }
+        }
+        
+        return response;
     }
 
     @Transactional

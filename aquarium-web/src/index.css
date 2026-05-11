@@ -942,7 +942,8 @@ a {
    ========================================== */
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: linear-gradient(135deg, #dbeafe, #e0f2fe, #cffafe);
 }
 
@@ -1108,7 +1109,7 @@ a {
   position: relative;
   padding: 0;
   overflow-y: auto;
-  min-height: 100vh;
+  height: 100%;
 }
 
 .aquarium-center {
@@ -1118,27 +1119,33 @@ a {
   width: 100%;
   height: 100%;
   flex: 1;
-  padding: 2rem;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .aquarium-wrapper {
-  position: relative;
-  max-width: 700px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
   width: 100%;
+  height: 100%;
   animation: fadeInUp 0.6s ease-out;
+  overflow: hidden;
 }
 
 .aquarium-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+  filter: none;
   user-select: none;
-  transition: transform 0.3s ease;
 }
 
 .aquarium-image:hover {
-  transform: scale(1.01);
+  transform: none;
 }
 
 /* ---------- Task Panel (Right) ---------- */

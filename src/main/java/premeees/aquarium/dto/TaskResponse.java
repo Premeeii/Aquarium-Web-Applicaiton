@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import premeees.aquarium.Entity.enums.TaskStatus;
-
 import java.time.LocalDateTime;
 
 @Data
@@ -19,4 +18,8 @@ public class TaskResponse {
     private Integer expectedDuration;
     private TaskStatus status;
     private LocalDateTime createdAt;
+
+    // Fish info for rendering in aquarium
+    private Long inventoryFishId;
+    private FishResponse fishDetails;
 }

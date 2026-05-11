@@ -273,11 +273,21 @@ export default function Sidebar() {
                           overflow: "hidden",
                         }}
                       >
-                        {item.itemType === "FISH" &&
-                        item.fishDetails?.imageUrlAdult ? (
+                        {item.itemType === "FISH" && item.fishDetails?.imageUrlAdult ? (
                           <img
                             src={item.fishDetails.imageUrlAdult}
                             alt={item.fishDetails.speciesName}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                              padding: "8px",
+                            }}
+                          />
+                        ) : item.itemType === "DECORATION" && item.decorationDetails?.imageUrl ? (
+                          <img
+                            src={item.decorationDetails.imageUrl}
+                            alt={item.decorationDetails.itemName}
                             style={{
                               width: "100%",
                               height: "100%",
@@ -313,7 +323,7 @@ export default function Sidebar() {
                           >
                             {item.itemType === "FISH"
                               ? item.fishDetails?.speciesName || "Unknown Fish"
-                              : `Item #${item.itemId}`}
+                              : item.decorationDetails?.itemName || `Item #${item.itemId}`}
                           </h3>
                           {item.itemType === "FISH" && item.fishDetails && (
                             <span

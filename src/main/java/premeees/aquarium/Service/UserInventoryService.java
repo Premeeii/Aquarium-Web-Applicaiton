@@ -44,6 +44,15 @@ public class UserInventoryService {
                     .imageUrlBaby(fish.getImageUrlBaby())
                     .imageUrlAdult(fish.getImageUrlAdult())
                     .build());
+        } else if (inventory.getItemType() == ItemType.DECORATION && inventory.getDecoration() != null) {
+            var dec = inventory.getDecoration();
+            response.setDecorationDetails(premeees.aquarium.dto.DecorationResponse.builder()
+                    .id(dec.getId())
+                    .itemName(dec.getItemName())
+                    .category(dec.getCategory())
+                    .price(dec.getPrice())
+                    .imageUrl(dec.getImageUrl())
+                    .build());
         }
 
         return response;

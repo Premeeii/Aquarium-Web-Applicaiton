@@ -35,6 +35,10 @@ public class UserInventory {
     @JoinColumn(name = "item_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Fish fish;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Decoration decoration;
+
     @CreationTimestamp
     @Column(name = "acquired_at", updatable = false)
     private LocalDateTime acquiredAt;

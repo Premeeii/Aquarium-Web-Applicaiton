@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useTaskStore } from "../stores/useTaskStore";
-import aquariumImg from "../assets/aquariumglass.png";
+import { AquariumCanvas } from "../components/AquariumCanvas";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -42,17 +42,5 @@ export default function Dashboard() {
     );
   }
 
-  return (
-    <div className="aquarium-center">
-      <div className="aquarium-wrapper">
-        <img
-          src={aquariumImg}
-          alt="Your Aquarium"
-          className="aquarium-image"
-          draggable={false}
-        />
-        {/* Future: fish overlays will be rendered here */}
-      </div>
-    </div>
-  );
+  return <AquariumCanvas />;
 }

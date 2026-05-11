@@ -7,6 +7,17 @@ export interface TaskResponse {
   expectedDuration: number;
   status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
   createdAt: string;
+  inventoryFishId?: number;
+  fishDetails?: {
+    id: number;
+    speciesName: string;
+    description: string;
+    basePrice: number;
+    rarity: string;
+    imageUrlEgg: string;
+    imageUrlBaby: string;
+    imageUrlAdult: string;
+  };
 }
 
 export interface TaskCreateRequest {

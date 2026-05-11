@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useFishStore } from "../stores/useFishStore";
+import { useDecorationStore } from "../stores/useDecorationStore";
 import { shopApi } from "../api/shop";
 
 type FilterCategory = "all" | "fish" | "plants" | "decorations";
@@ -10,9 +11,10 @@ export default function Shop() {
   const navigate = useNavigate();
   const { profile, fetchProfile, refreshProfile } = useAuthStore();
   const { fishes, loadingFishes, fetchFishes } = useFishStore();
+  const { decorations, loadingDecorations, fetchDecorations } = useDecorationStore();
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
-  const [purchasingId, setPurchasingId] = useState<number | null>(null);
-  const [confirmModalData, setConfirmModalData] = useState<{ id: number, name: string, price: number } | null>(null);
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const [confirmModalData, setConfirmModalData] = useState<{ id: number, type: "FISH" | "DECORATION", name: string, price: number } | null>(null);
 
   useEffect(() => {
     fetchProfile().then((authenticated) => {
@@ -21,6 +23,9 @@ export default function Shop() {
     // Fetch fishes without opening modal
     if (fishes.length === 0) {
       fetchFishes();
+    }
+    if (decorations.length === 0) {
+      fetchDecorations();
     }
   }, [navigate]);
 
@@ -31,13 +36,52 @@ export default function Shop() {
     { label: "Decorations", value: "decorations" },
   ];
 
-  // For now, all items are fish. Filter logic can be extended later.
-  const filteredItems =
-    activeFilter === "all" || activeFilter === "fish" ? fishes : [];
+  interface UnifiedItem {
+    id: number;
+    type: "FISH" | "DECORATION";
+    uid: string; // unique string id for frontend state
+    name: string;
+    description: string;
+    price: number;
+    rarity?: string;
+    imageUrl: string;
+    backendCategory?: string;
+  }
+
+  const unifiedItems: UnifiedItem[] = [
+    ...fishes.map((f) => ({
+      id: f.id,
+      type: "FISH" as const,
+      uid: `fish-${f.id}`,
+      name: f.speciesName,
+      description: f.description,
+      price: f.basePrice,
+      rarity: f.rarity,
+      imageUrl: f.imageUrlAdult,
+    })),
+    ...decorations.map((d) => ({
+      id: d.id,
+      type: "DECORATION" as const,
+      uid: `decoration-${d.id}`,
+      name: d.itemName,
+      description: d.category,
+      price: d.price,
+      imageUrl: d.imageUrl,
+      backendCategory: d.category,
+    })),
+  ];
+
+  const filteredItems = unifiedItems.filter(item => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "fish") return item.type === "FISH";
+    if (activeFilter === "plants") return item.type === "DECORATION" && item.backendCategory?.toUpperCase().includes("PLANT");
+    if (activeFilter === "decorations") return item.type === "DECORATION" && !item.backendCategory?.toUpperCase().includes("PLANT");
+    return true;
+  });
 
   const confirmPurchase = async () => {
     if (!confirmModalData) return;
-    const { id, price } = confirmModalData;
+    const { id, type, price } = confirmModalData;
 
     if (profile && profile.coins < price) {
       alert("Insufficient coins to purchase this item.");
@@ -45,9 +89,13 @@ export default function Shop() {
       return;
     }
 
-    setPurchasingId(id);
+    setPurchasingId(`${type}-${id}`);
     try {
-      await shopApi.purchaseFish(id);
+      if (type === "FISH") {
+        await shopApi.purchaseFish(id);
+      } else {
+        await shopApi.purchaseDecoration(id);
+      }
       await refreshProfile(); // Refresh coins
       alert("Purchase successful! The item is now in your inventory.");
     } catch (err: any) {
@@ -84,7 +132,7 @@ export default function Shop() {
 
       {/* Items List */}
       <div className="shop-items">
-        {loadingFishes ? (
+        {loadingFishes || loadingDecorations ? (
           <div
             style={{
               display: "flex",
@@ -118,40 +166,44 @@ export default function Shop() {
             <p>No items available in this category yet 🌊</p>
           </div>
         ) : (
-          filteredItems.map((fish, index) => (
+          filteredItems.map((item, index) => (
             <div
-              key={fish.id}
+              key={item.uid}
               className="shop-card animate-fade-in"
               style={{ animationDelay: `${0.1 + index * 0.05}s` }}
             >
               <div className="shop-card-image">
-                {fish.imageUrlAdult ? (
-                  <img src={fish.imageUrlAdult} alt={fish.speciesName} />
+                {item.imageUrl ? (
+                  <img src={item.imageUrl} alt={item.name} />
                 ) : (
-                  <div className="shop-card-image-placeholder">🐟</div>
+                  <div className="shop-card-image-placeholder">
+                    {item.type === "FISH" ? "🐟" : "🪴"}
+                  </div>
                 )}
               </div>
               <div className="shop-card-info">
-                <h3 className="shop-card-name">{fish.speciesName}</h3>
-                <span
-                  className={`shop-card-rarity rarity-${fish.rarity.toLowerCase()}`}
-                >
-                  <span className="rarity-dot" />
-                  {fish.rarity}
-                </span>
-                <p className="shop-card-desc">{fish.description}</p>
+                <h3 className="shop-card-name">{item.name}</h3>
+                {item.rarity && (
+                  <span
+                    className={`shop-card-rarity rarity-${item.rarity.toLowerCase()}`}
+                  >
+                    <span className="rarity-dot" />
+                    {item.rarity}
+                  </span>
+                )}
+                <p className="shop-card-desc">{item.description}</p>
               </div>
               <div className="shop-card-action">
                 <div className="shop-card-price">
                   <span className="price-icon">🪙</span>
-                  <span className="price-value">{fish.basePrice}</span>
+                  <span className="price-value">{item.price}</span>
                 </div>
                 <button 
                   className="shop-buy-btn"
-                  onClick={() => setConfirmModalData({ id: fish.id, name: fish.speciesName, price: fish.basePrice })}
-                  disabled={purchasingId === fish.id}
+                  onClick={() => setConfirmModalData({ id: item.id, type: item.type, name: item.name, price: item.price })}
+                  disabled={purchasingId === item.uid}
                 >
-                  {purchasingId === fish.id ? "Purchasing..." : "Buy Now"}
+                  {purchasingId === item.uid ? "Purchasing..." : "Buy Now"}
                 </button>
               </div>
             </div>

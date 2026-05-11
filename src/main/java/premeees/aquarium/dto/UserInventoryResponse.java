@@ -17,5 +17,6 @@ public class UserInventoryResponse {
     private ItemType itemType;
     private Integer itemId;
     private FishResponse fishDetails;
+    private DecorationResponse decorationDetails;
     private LocalDateTime acquiredAt;
 }

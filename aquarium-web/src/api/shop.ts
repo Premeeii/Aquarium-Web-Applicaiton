@@ -2,4 +2,5 @@ import api from './auth';
 
 export const shopApi = {
   purchaseFish: (fishId: number) => api.post<{ message: string }>(`/shop/purchase/${fishId}`),
+  purchaseDecoration: (decorationId: number) => api.post<{ message: string }>(`/shop/purchase/decoration/${decorationId}`),
 };

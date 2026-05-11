@@ -26,4 +26,15 @@ public class ShopController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PostMapping("/purchase/decoration/{decorationId}")
+    public ResponseEntity<?> purchaseDecoration(@PathVariable Integer decorationId, Authentication authentication) {
+        try {
+            String username = authentication.getName();
+            shopService.purchaseDecoration(username, decorationId);
+            return ResponseEntity.ok(Map.of("message", "Purchase successful"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
 }

@@ -9,7 +9,9 @@ import premeees.aquarium.Entity.UserFishInstance;
 import premeees.aquarium.Entity.UserInventory;
 import premeees.aquarium.Entity.enums.GrowthStage;
 import premeees.aquarium.Entity.enums.ItemType;
+import premeees.aquarium.Entity.Decoration;
 import premeees.aquarium.Repository.FishRepository;
+import premeees.aquarium.Repository.DecorationRepository;
 import premeees.aquarium.Repository.UserFishInstanceRepository;
 import premeees.aquarium.Repository.UserInventoryRepository;
 import premeees.aquarium.Repository.UserRepository;
@@ -20,6 +22,7 @@ public class ShopService {
 
     private final UserRepository userRepository;
     private final FishRepository fishRepository;
+    private final DecorationRepository decorationRepository;
     private final UserInventoryRepository userInventoryRepository;
     private final UserFishInstanceRepository userFishInstanceRepository;
 
@@ -62,5 +65,39 @@ public class ShopService {
                 .isInAquarium(false)
                 .build();
         userFishInstanceRepository.save(newFishInstance);
+    }
+
+    @Transactional
+    public void purchaseDecoration(String username, Integer decorationId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Decoration decoration = decorationRepository.findById(decorationId)
+                .orElseThrow(() -> new RuntimeException("Decoration not found"));
+
+        // Constraint Check: Only one item per user
+        boolean alreadyOwned = userInventoryRepository.existsByUserAndItemIdAndItemType(user, decorationId, ItemType.DECORATION);
+        if (alreadyOwned) {
+            throw new RuntimeException("You already own this decoration");
+        }
+
+        // Balance Check
+        if (user.getCoins() < decoration.getPrice()) {
+            throw new RuntimeException("Insufficient coins to purchase this item");
+        }
+
+        // Deduct Coins
+        user.setCoins(user.getCoins() - decoration.getPrice());
+        userRepository.save(user);
+
+        // Add to Inventory
+        UserInventory newInventory = UserInventory.builder()
+                .user(user)
+                .itemType(ItemType.DECORATION)
+                .itemId(decorationId)
+                .build();
+        userInventoryRepository.save(newInventory);
+        
+        // Decorations don't need a UserFishInstance, so we're done here.
     }
 }
