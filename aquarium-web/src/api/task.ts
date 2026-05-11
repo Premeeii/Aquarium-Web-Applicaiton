@@ -37,4 +37,6 @@ export const taskApi = {
   createTask: (data: TaskCreateRequest) => api.post<TaskResponse>('/tasks', data),
   completeTask: (taskId: number, data: TaskCompleteRequest) => 
     api.put<TaskCompleteResponse>(`/tasks/${taskId}/complete`, data),
+  cancelTask: (taskId: number) =>
+    api.put<void>(`/tasks/${taskId}/cancel`),
 };

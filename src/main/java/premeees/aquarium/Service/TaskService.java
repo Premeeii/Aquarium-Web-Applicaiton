@@ -107,9 +107,10 @@ public class TaskService {
             coinsEarned += 10;
         }
 
-        // 6. Update user coins
+        // 6. Update user coins and streak
         User user = task.getUser();
         user.setCoins(user.getCoins() + coinsEarned);
+        user.setStreakCount(user.getStreakCount() + 1);
         userRepository.save(user);
 
         // 7. Update fish growth if a fish was assigned
@@ -146,5 +147,30 @@ public class TaskService {
                 .fishUpdate(fishUpdateInfo)
                 .build();
     }
-}
 
+    @Transactional
+    public void cancelTask(String username, Long taskId) {
+        // 1. Find the task
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        // 2. Validate ownership
+        if (!task.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Task does not belong to the user");
+        }
+
+        // 3. Validate status
+        if (task.getStatus() != TaskStatus.PENDING) {
+            throw new RuntimeException("Task is already " + task.getStatus());
+        }
+
+        // 4. Update task status to CANCELED
+        task.setStatus(TaskStatus.CANCELED);
+        taskRepository.save(task);
+
+        // 5. Reset streak to 0
+        User user = task.getUser();
+        user.setStreakCount(0);
+        userRepository.save(user);
+    }
+}

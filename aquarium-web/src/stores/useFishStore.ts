@@ -21,7 +21,7 @@ export const useFishStore = create<FishState>((set) => ({
     set({ loadingFishes: true });
     try {
       const res = await fishApi.getAllFishes();
-      set({ fishes: res.data, isModalOpen: true });
+      set({ fishes: res.data });
     } catch (err) {
       console.error('Failed to fetch fishes', err);
       alert('Could not load fish species');

@@ -42,5 +42,14 @@ public class TaskController {
         TaskCompleteResponse response = taskService.completeTask(username, taskId, request);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{taskId}/cancel")
+    public ResponseEntity<Void> cancelTask(
+            @PathVariable Long taskId,
+            Authentication authentication) {
+        String username = authentication.getName();
+        taskService.cancelTask(username, taskId);
+        return ResponseEntity.ok().build();
+    }
 }
 

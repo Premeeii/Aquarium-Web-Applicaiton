@@ -702,6 +702,242 @@ a {
   color: var(--primary);
 }
 /* ==========================================
+   Shop Page Styles
+   ========================================== */
+.shop-page {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+}
+
+.shop-header {
+  margin-bottom: 1.5rem;
+}
+
+.shop-brand {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shop-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 4px 0 8px;
+  letter-spacing: -0.5px;
+}
+
+.shop-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 520px;
+}
+
+/* Filter Tabs */
+.shop-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.shop-filter-btn {
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: 1.5px solid var(--card-border);
+  background: #ffffff;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.shop-filter-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.shop-filter-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
+}
+
+/* Shop Items List */
+.shop-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.shop-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Shop Card */
+.shop-card {
+  display: flex;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.shop-card:hover {
+  border-color: rgba(8, 145, 178, 0.25);
+  box-shadow: 0 8px 24px rgba(8, 145, 178, 0.08);
+  transform: translateY(-2px);
+}
+
+.shop-card-image {
+  width: 200px;
+  min-height: 180px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.shop-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shop-card-image-placeholder {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.shop-card-info {
+  flex: 1;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.shop-card-name {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
+}
+
+.shop-card-rarity {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 6px;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+.rarity-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.shop-card-rarity.rarity-common {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.shop-card-rarity.rarity-uncommon {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.shop-card-rarity.rarity-rare {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.shop-card-rarity.rarity-legendary {
+  background: #fff7ed;
+  color: #d97706;
+}
+
+.shop-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.shop-card-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.shop-card-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.price-icon {
+  font-size: 1.25rem;
+}
+
+.price-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.shop-buy-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  background: #ffffff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  transition: all 0.2s ease;
+}
+
+.shop-buy-btn:hover {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ==========================================
    App Layout — 3-column
    ========================================== */
 .app-layout {
@@ -868,10 +1104,10 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
-  padding: 2rem;
-  overflow: hidden;
+  padding: 0;
+  overflow-y: auto;
   min-height: 100vh;
 }
 
@@ -882,6 +1118,7 @@ a {
   width: 100%;
   height: 100%;
   flex: 1;
+  padding: 2rem;
 }
 
 .aquarium-wrapper {
@@ -1388,6 +1625,25 @@ a {
 .btn-confirm-cancel:hover {
   background: #f1f5f9;
   color: var(--text-primary);
+}
+
+.btn-confirm-primary {
+  flex: 1;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2);
+}
+
+.btn-confirm-primary:hover {
+  background: #06b6d4;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(8, 145, 178, 0.3);
 }
 
 .btn-confirm-danger {

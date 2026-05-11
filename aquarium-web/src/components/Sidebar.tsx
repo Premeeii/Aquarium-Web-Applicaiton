@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
-import { useFishStore } from "../stores/useFishStore";
 import { useInventoryStore } from "../stores/useInventoryStore";
 import { useTaskStore } from "../stores/useTaskStore";
 
@@ -11,10 +10,6 @@ export default function Sidebar() {
 
   // Auth store
   const { profile, logout } = useAuthStore();
-
-  // Fish store
-  const { fishes, loadingFishes, isModalOpen, fetchFishes, closeShop } =
-    useFishStore();
 
   // Inventory store
   const {
@@ -109,9 +104,8 @@ export default function Sidebar() {
           </button>
 
           <button
-            onClick={fetchFishes}
-            className={`sidebar-nav-item ${isModalOpen ? "active" : ""}`}
-            disabled={loadingFishes}
+            onClick={() => navigate("/shop")}
+            className={`sidebar-nav-item ${location.pathname === "/shop" ? "active" : ""}`}
           >
             <svg
               viewBox="0 0 24 24"
@@ -123,7 +117,7 @@ export default function Sidebar() {
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
             </svg>
-            <span>{loadingFishes ? "..." : "Shop"}</span>
+            <span>Shop</span>
           </button>
 
           <button
@@ -200,56 +194,7 @@ export default function Sidebar() {
 
       {/* ============ Modals ============ */}
 
-      {/* Shop Modal */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={closeShop}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>🛒 Shop</h2>
-              <button className="btn-close" onClick={closeShop}>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  style={{ width: "18px" }}
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="fish-grid">
-                {fishes.map((fish) => (
-                  <div key={fish.id} className="fish-item">
-                    <div className="fish-img-container">
-                      {fish.imageUrlAdult ? (
-                        <img src={fish.imageUrlAdult} alt={fish.speciesName} />
-                      ) : (
-                        <span>🐟</span>
-                      )}
-                    </div>
-                    <div className="fish-info">
-                      <h3>
-                        {fish.speciesName}
-                        <span
-                          className={`fish-rarity rarity-${fish.rarity.toLowerCase()}`}
-                        >
-                          {fish.rarity}
-                        </span>
-                      </h3>
-                      <p className="fish-desc">{fish.description}</p>
-                      <div className="fish-price">
-                        <span>🪙 {fish.basePrice}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Inventory Modal */}
       {isInventoryOpen && (

@@ -23,6 +23,7 @@ interface TaskState {
   fetchTasks: () => Promise<void>;
   createTask: () => Promise<boolean>;
   completeTask: () => Promise<boolean>;
+  cancelTask: (taskId: number) => Promise<boolean>;
   openTaskModal: () => void;
   closeTaskModal: () => void;
   openCompleteModal: (task: TaskResponse) => void;
@@ -99,6 +100,17 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       return true;
     } catch {
       alert('Failed to complete task');
+      return false;
+    }
+  },
+
+  cancelTask: async (taskId: number) => {
+    try {
+      await taskApi.cancelTask(taskId);
+      get().fetchTasks();
+      return true;
+    } catch {
+      alert('Failed to cancel task');
       return false;
     }
   },

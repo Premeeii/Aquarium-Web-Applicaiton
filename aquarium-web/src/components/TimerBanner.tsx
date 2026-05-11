@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTimerStore } from '../stores/useTimerStore';
 import { useTaskStore } from '../stores/useTaskStore';
+import { useAuthStore } from '../stores/useAuthStore';
 
 export const TimerBanner: React.FC = () => {
   const { 
     activeTask, timeLeft, status, tick, 
     pauseTimer, resumeTimer, stopTimer 
   } = useTimerStore();
-  const { openCompleteModal, setActualDuration, setCompletedEarly } = useTaskStore();
+  const { openCompleteModal, setActualDuration, setCompletedEarly, cancelTask } = useTaskStore();
+  const { refreshProfile } = useAuthStore();
 
   // Local state for give-up confirmation modal
   const [showGiveUpConfirm, setShowGiveUpConfirm] = useState(false);
@@ -56,8 +58,12 @@ export const TimerBanner: React.FC = () => {
     setShowGiveUpConfirm(true);
   };
 
-  const confirmGiveUp = () => {
+  const confirmGiveUp = async () => {
     setShowGiveUpConfirm(false);
+    if (activeTask) {
+      await cancelTask(activeTask.id);
+      await refreshProfile();
+    }
     stopTimer();
   };
 
