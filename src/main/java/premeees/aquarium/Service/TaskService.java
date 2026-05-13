@@ -36,12 +36,39 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+    public List<TaskResponse> getTaskHistory(String username, String tag) {
+        List<TaskStatus> statuses = List.of(TaskStatus.COMPLETED, TaskStatus.CANCELED);
+        List<Task> tasks = taskRepository.findByUserUsernameAndStatusInOrderByCreatedAtDesc(username, statuses);
+        
+        if (tag != null && !tag.isEmpty() && !tag.equalsIgnoreCase("all")) {
+            tasks = tasks.stream()
+                    .filter(t -> tag.equalsIgnoreCase(t.getTag()))
+                    .collect(Collectors.toList());
+        }
+        
+        return tasks.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private TaskResponse mapToResponse(Task task) {
+        // Calculate coins earned for completed tasks
+        Integer coinsEarned = null;
+        if (task.getStatus() == TaskStatus.COMPLETED && task.getActualDuration() != null) {
+            coinsEarned = task.getActualDuration();
+            // Bonus 10 coins for completing the full duration
+            if (task.getActualDuration() >= task.getExpectedDuration()) {
+                coinsEarned += 10;
+            }
+        }
+
         TaskResponse response = TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
                 .tag(task.getTag())
                 .expectedDuration(task.getExpectedDuration())
+                .actualDuration(task.getActualDuration())
+                .coinsEarned(coinsEarned)
                 .status(task.getStatus())
                 .createdAt(task.getCreatedAt())
                 .build();
@@ -186,10 +213,5 @@ public class TaskService {
         // 4. Update task status to CANCELED
         task.setStatus(TaskStatus.CANCELED);
         taskRepository.save(task);
-
-        // 5. Reset streak to 0
-        User user = task.getUser();
-        user.setStreakCount(0);
-        userRepository.save(user);
     }
 }

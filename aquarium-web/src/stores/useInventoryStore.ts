@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { inventoryApi } from '../api/inventory';
 import type { UserInventoryItem } from '../api/inventory';
 
+
 interface InventoryState {
   inventory: UserInventoryItem[];
   loadingInventory: boolean;

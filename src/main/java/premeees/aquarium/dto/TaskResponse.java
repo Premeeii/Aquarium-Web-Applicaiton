@@ -16,6 +16,8 @@ public class TaskResponse {
     private String title;
     private String tag;
     private Integer expectedDuration;
+    private Integer actualDuration;
+    private Integer coinsEarned;
     private TaskStatus status;
     private LocalDateTime createdAt;
 

@@ -24,4 +24,5 @@ export interface AquariumLayoutResponse {
 export const layoutApi = {
   getLayout: () => api.get<AquariumLayoutResponse[]>('/layout'),
   saveLayout: (data: AquariumLayoutRequest) => api.post<AquariumLayoutResponse[]>('/layout', data),
+  deleteLayoutItem: (id: number) => api.delete(`/layout/${id}`),
 };

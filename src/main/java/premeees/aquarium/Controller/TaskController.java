@@ -25,6 +25,14 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasks(username));
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<List<TaskResponse>> getTaskHistory(
+            Authentication authentication,
+            @RequestParam(required = false) String tag) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(taskService.getTaskHistory(username, tag));
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponse> createTask(@RequestBody TaskCreateRequest request,
             Authentication authentication) {

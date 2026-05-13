@@ -28,4 +28,11 @@ public class AquariumLayoutController {
         String username = authentication.getName();
         return ResponseEntity.ok(aquariumLayoutService.saveLayout(username, request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLayoutItem(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        aquariumLayoutService.deleteLayoutItem(id, username);
+        return ResponseEntity.noContent().build();
+    }
 }

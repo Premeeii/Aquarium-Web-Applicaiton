@@ -2,12 +2,14 @@ import { create } from 'zustand';
 
 export interface AquariumItem {
   id: string; // Could be a combination of type and DB id
+  dbId?: number; // DB id for deleting
   type: "decoration" | "fish";
   x: number; // 0-100%
   y: number; // 0-100%
   zIndex: number;
   flipX?: boolean;
   imageUrl: string;
+  label?: string;
 }
 
 interface AquariumState {
@@ -18,7 +20,7 @@ interface AquariumState {
   setEditMode: (isEdit: boolean) => void;
   updateItemPosition: (id: string, x: number, y: number) => void;
   addItem: (item: AquariumItem) => void;
-  removeItem: (id: string) => void;
+  removeItem: (id: string) => Promise<void>;
   fetchLayout: (inventory: any[]) => Promise<void>;
   saveLayout: () => Promise<void>;
 }
@@ -43,9 +45,21 @@ export const useAquariumStore = create<AquariumState>((set, get) => ({
       : [...state.layoutItems, item]
   })),
 
-  removeItem: (id) => set((state) => ({
-    layoutItems: state.layoutItems.filter(item => item.id !== id)
-  })),
+  removeItem: async (id) => {
+    const item = get().layoutItems.find(i => i.id === id);
+    if (item?.dbId) {
+      try {
+        const { layoutApi } = await import('../api/layout');
+        await layoutApi.deleteLayoutItem(item.dbId);
+      } catch (err) {
+        console.error('Failed to delete item from DB', err);
+      }
+    }
+    
+    set((state) => ({
+      layoutItems: state.layoutItems.filter(item => item.id !== id)
+    }));
+  },
 
   fetchLayout: async (inventory: any[]) => {
     set({ loading: true });
@@ -67,6 +81,7 @@ export const useAquariumStore = create<AquariumState>((set, get) => ({
         
         return {
           id: dbItem.frontendId,
+          dbId: dbItem.id,
           type: dbItem.instanceType === 'FISH' ? 'fish' : 'decoration',
           x: dbItem.posX,
           y: dbItem.posY,

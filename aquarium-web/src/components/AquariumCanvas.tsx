@@ -4,6 +4,7 @@ import { useAquariumStore } from "../stores/useAquariumStore";
 import { useTaskStore } from "../stores/useTaskStore";
 import { useInventoryStore } from "../stores/useInventoryStore";
 import { PlacedItem } from "./PlacedItem";
+import { LofiPlayer } from "./LofiPlayer";
 
 export const AquariumCanvas: React.FC = () => {
   const {
@@ -11,6 +12,7 @@ export const AquariumCanvas: React.FC = () => {
     isEditMode,
     setEditMode,
     addItem,
+    removeItem,
     updateItemPosition,
     saveLayout,
     fetchLayout,
@@ -98,6 +100,9 @@ export const AquariumCanvas: React.FC = () => {
         </button>
       </div>
 
+      {/* Lofi Music Player */}
+      <LofiPlayer />
+
       <div
         ref={canvasRef}
         className="aquarium-wrapper"
@@ -128,7 +133,12 @@ export const AquariumCanvas: React.FC = () => {
 
         {/* Render all placed items (decorations and active fish) */}
         {layoutItems.map((item) => (
-          <PlacedItem key={item.id} item={item} />
+          <PlacedItem
+            key={item.id}
+            item={item}
+            isEditMode={isEditMode}
+            onRemove={() => removeItem(item.id)}
+          />
         ))}
 
         {/* Render fish from active tasks */}
@@ -151,7 +161,7 @@ export const AquariumCanvas: React.FC = () => {
                 y: startY,
                 zIndex: 10 + index,
                 imageUrl: task.fishDetails.imageUrlAdult || "", // For now just use adult, or map based on growthStage if added later
-                flipX: seed % 2 === 0,
+                label: task.title,
               }}
             />
           );
@@ -163,8 +173,8 @@ export const AquariumCanvas: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            bottom: "20px",
             left: "50%",
+            top: "20px",
             transform: "translateX(-50%)",
             zIndex: 100,
             width: "calc(100% - 40px)",

@@ -11,7 +11,7 @@ export default function TaskPanel() {
   const { fetchProfile } = useAuthStore();
 
   // Task store
-  const { tasks, loadingTasks, fetchTasks, openCompleteModal } = useTaskStore();
+  const { tasks, loadingTasks, fetchTasks, cancelTask } = useTaskStore();
 
   const { startTimer, activeTask } = useTimerStore();
 
@@ -80,10 +80,13 @@ export default function TaskPanel() {
                       ▶ Start
                     </button>
                     <button
-                      onClick={() => openCompleteModal(task)}
-                      className="task-panel-btn task-panel-btn-complete"
+                      onClick={async () => {
+                        await cancelTask(task.id);
+                        fetchProfile();
+                      }}
+                      className="task-panel-btn task-panel-btn-cancel"
                     >
-                      ✓ Complete
+                      ✕ Cancel
                     </button>
                   </div>
                 )}

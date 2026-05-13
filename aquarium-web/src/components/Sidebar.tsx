@@ -121,6 +121,22 @@ export default function Sidebar() {
           </button>
 
           <button
+            onClick={() => navigate("/history")}
+            className={`sidebar-nav-item ${location.pathname === "/history" ? "active" : ""}`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span>History</span>
+          </button>
+
+          <button
             onClick={() => {
               ensureLoaded();
               openTaskModal();

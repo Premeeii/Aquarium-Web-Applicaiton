@@ -59,4 +59,19 @@ public class AquariumLayoutService {
 
         return getLayout(username);
     }
+
+    @Transactional
+    public void deleteLayoutItem(Long id, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        AquariumLayout layout = aquariumLayoutRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Layout item not found"));
+        
+        if (!layout.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Not authorized to delete this item");
+        }
+        
+        aquariumLayoutRepository.delete(layout);
+    }
 }

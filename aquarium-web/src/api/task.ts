@@ -5,6 +5,8 @@ export interface TaskResponse {
   title: string;
   tag: string;
   expectedDuration: number;
+  actualDuration?: number;
+  coinsEarned?: number;
   status: 'PENDING' | 'COMPLETED' | 'CANCELLED';
   createdAt: string;
   inventoryFishId?: number;
@@ -45,6 +47,7 @@ export interface TaskCompleteResponse {
 
 export const taskApi = {
   getMyTasks: () => api.get<TaskResponse[]>('/tasks/me'),
+  getTaskHistory: (tag?: string) => api.get<TaskResponse[]>('/tasks/history', { params: tag ? { tag } : {} }),
   createTask: (data: TaskCreateRequest) => api.post<TaskResponse>('/tasks', data),
   completeTask: (taskId: number, data: TaskCompleteRequest) => 
     api.put<TaskCompleteResponse>(`/tasks/${taskId}/complete`, data),
